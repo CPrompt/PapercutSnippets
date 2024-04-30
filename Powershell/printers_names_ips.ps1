@@ -11,4 +11,4 @@
 
  
 $printserver = "<SERVER_NAME>" 
-Get-WMIObject -class Win32_Printer -computer $printserver | Select Name,DriverName,PortName | Export-CSV -path 'C:\printers.csv'
+Get-WMIObject -class Win32_Printer -computer $printserver | Select PrinterName,DriverName,PortName | Export-CSV -path 'C:\printers.csv'

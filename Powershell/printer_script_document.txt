@@ -1,0 +1,27 @@
+1.  Does the customer have an existing print server with names and IP's set?  
+	YES: run "printers_multiple_servers.ps1"  
+		This will export the information to a CSV file including Name, ShareName, DriverName, PortName and the system name of where it is running
+	NO:  Have the customer fill out the "Device List" document so that the information is known.  Will also need to know the server name
+    
+Now that we have the needed information, we can use that CSV file to build out the rest.  
+
+2.  Install the driver for the printers.  Typically we can just use the Universal Driver for the manufacturer.  For KM devices, we can use the PCL6 Common Driver.
+
+3.  Install PaperCut on the new server.
+
+4.  If the customer does not have the print server already, we can run the script "add_printer_with_ports.ps1"
+    This script is using a modified version of the CSV file to include "PrinterName", "PortName", "PortAddress", "DriverName"
+    The portname and portaddress will be the same, just use the IP of the device.
+    Name this CSV file "printers_import.csv".  If you change the name, make sure to change it in the script.
+    
+    This script will also convert the print queues to PaperCut Ports instead of Standard TCP/IP
+    
+    
+    
+    
+5.  Now that PaperCut is installed, the drivers are installed, the printers are installed with the driver needed and shared, we can now build one more CSV file that will be for the printer shares.  This will be used on the reference PC to be used with Print Deploy.
+Create the CSV file called "reference_printers.csv"
+
+This CSV file will only have one column that will need to be created.  You can merge the "SystemName" and "ShareName" that was exported from the "printers_multiple_servers.ps1" script.  It will just have one column named "Name"
+
+set-executionpolicy remotesigned
