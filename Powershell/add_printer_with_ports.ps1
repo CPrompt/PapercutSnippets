@@ -64,7 +64,15 @@ if ($decision -eq 0) {
     Write-Host 'Not converting print queues at this time...'
 }
 
-
+#turn off bi-direction support and advanced printing features for all printers
+foreach ($line in $queuefile){
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName -enablebidi
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName +rawonly
+	# set default to greyscale and turn off duplexing
+	Set-PrintConfiguration -PrinterName  $line.PrinterName -Color $false
+	Set-PrintConfiguration -PrinterName  $line.PrinterName -DuplexingMode 0
+}
+	
 
 
 
