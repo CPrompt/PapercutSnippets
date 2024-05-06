@@ -4,8 +4,8 @@ $queuefile=import-csv printers.csv
 
 foreach ($line in $queuefile){
 	
-	if ($line.PrinterName -ne (Get-Printer -name $line.PrinterName -ErrorAction SilentlyContinue)) {
-		Write-Host "Printer: "  $line.PrinterName  " doesn't exist..." -ForegroundColor Green
+	if ($line.Name -ne (Get-Printer -name $line.Name -ErrorAction SilentlyContinue)) {
+		Write-Host "Printer: "  $line.Name  " doesn't exist..." -ForegroundColor Green
 		# Check if printerport doesn't exist
 		if ($line.PortName -ne (Get-PrinterPort -name $line.PortAddress -ErrorAction SilentlyContinue)) {
 		# Add printerPort
@@ -18,7 +18,7 @@ foreach ($line in $queuefile){
 	
     try {
 		# Add the printer
-		Add-Printer -N $line.PrinterName -PortName $line.PortName -DriverName $line.DriverName -ErrorAction stop
+		Add-Printer -N $line.Name -PortName $line.PortName -DriverName $line.DriverName -ErrorAction stop
 	}catch{
 		Write-Host $_.Exception.Message -ForegroundColor Red
 		break
@@ -55,7 +55,7 @@ if ($decision -eq 0) {
 			if ($printerport.Description -eq "Standard TCP/IP Port") {
 				$newport = $line.PortName.Insert(0,"PAPERCUT_") 
 				Write-Host "Changing" $line.name "from port" $line.PortName "to" $newport
-				Set-Printer $line.PrinterName -PortName $newport
+				Set-Printer $line.Name -PortName $newport
 			}
 	}
 	
@@ -66,11 +66,11 @@ if ($decision -eq 0) {
 
 #turn off bi-direction support and advanced printing features for all printers
 foreach ($line in $queuefile){
-	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName -enablebidi
-	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName +rawonly
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.Name -enablebidi
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.Name +rawonly
 	# set default to greyscale and turn off duplexing
-	Set-PrintConfiguration -PrinterName  $line.PrinterName -Color $false
-	Set-PrintConfiguration -PrinterName  $line.PrinterName -DuplexingMode 0
+	Set-PrintConfiguration .Name  $line.Name -Color $false
+	Set-PrintConfiguration .Name  $line.Name -DuplexingMode 0
 }
 	
 
