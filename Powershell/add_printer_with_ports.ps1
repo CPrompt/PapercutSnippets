@@ -2,6 +2,31 @@
 # CSV file with the information for printer names and ports
 $queuefile=import-csv printers_import.csv
 
+    # example
+    # Write-Log -logText "Message to file"
+# write log file
+function Write-Log{
+    param(
+        [string]$logText
+    )
+
+
+    # log file and message formatting
+    $logFile = "print_creation.log"
+    # Check to make sure it exists and if not create it
+    if(-not(Test-Path $logFile)){
+        New-Item -ItemType File -Path $logFile -Force
+    }
+
+    $timeStamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $logMessage = "$timeStamp - $logText"
+
+    #write to file
+    $logMessage | Out-File -FilePath $logFile -Append
+}
+
+
+
 foreach ($line in $queuefile){
 	
 	if ($line.Name -ne (Get-Printer -name $line.Name -ErrorAction SilentlyContinue)) {
@@ -10,9 +35,11 @@ foreach ($line in $queuefile){
 		if ($line.PortName -ne (Get-PrinterPort -name $line.PortAddress -ErrorAction SilentlyContinue)) {
 		# Add printerPort
 			Write-Host "Port doesn't exist.  Adding printer port: "  $line.PortName -ForegroundColor Green
+            Write-Log -logText "Added port:" $line.PortName            
 			Add-PrinterPort -Name $line.PortName -PrinterHostAddress $line.PortAddress
 		}else{
 			Write-Host "Printer port with name $($printerPortName) already exists" -ForegroundColor Red
+            Write-Log -logText "Printer already exisits:" $line.PortName
 		}
 
 	
@@ -21,13 +48,16 @@ foreach ($line in $queuefile){
         # right here we need to check if the printer is to be shared and if so, share it and set the share name
             if($line.Shared.ToLower() -eq "yes"){
                 #add printer and share
-                Add-Printer -Name $line.Name -PortName $line.PortName -DriverName $line.DriverName -ShareName $line.ShareName -Shared -ErrorAction stop
+                Add-Printer -Name $line.Name -PortName $line.PortName -DriverName $line.DriverName -ShareName $line.ShareName -Shared -ErrorAction SilentlyContinue
+                Write-Log -logText "Adding printer and sharing: " $line.Name
             }else{
                 # Add the printer
-		        Add-Printer -N $line.Name -PortName $line.PortName -DriverName $line.DriverName -ErrorAction stop
+		        Add-Printer -N $line.Name -PortName $line.PortName -DriverName $line.DriverName -ErrorAction SilentlyContinue
+                Write-Log -logText "Adding printer: " $line.Name
             }
 	}catch{
 		Write-Host $_.Exception.Message -ForegroundColor Red
+        Write-Log -logText $_.Exception.Message
 		break
     }
 		Write-Host "Printer successfully installed" -ForegroundColor Green
@@ -50,9 +80,11 @@ if ($decision -eq 0) {
 					Write-Host "Adding keys to the registry for" $newport
 					REG ADD "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Monitors\PaperCut TCP/IP Port\Ports\$newport" /v HostName /t REG_SZ /d $printerPort.Name /f
 					REG ADD "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Monitors\PaperCut TCP/IP Port\Ports\$newport" /v PortNumber /t REG_DWORD /d 0x0000238c /f
+                    Write-Log -logText "*** Converting to PaperCut ports..."
 			}
 	}
 	Write-Host "Restarting the Print Spooler Service"
+    Write-Log -logText  "Restarting the Print Spooler Service"
 	Restart-Service -Name Spooler -Force
 	foreach ($line in $queuefile){
 		$printerport = Get-PrinterPort -Name $line.PortName
@@ -60,12 +92,14 @@ if ($decision -eq 0) {
 				$newport = $line.PortName.Insert(0,"PAPERCUT_") 
 				Write-Host "Changing" $line.name "from port" $line.PortName "to" $newport
 				Set-Printer $line.Name -PortName $newport
+                Write-Log  "Changing" $line.name "from port" $line.PortName "to" $newport
 			}
 	}
 	
 	
 } else {
-    Write-Host 'Not converting print queues at this time...'
+    Write-Host "Not converting print queues at this time..."
+    Write-Log -logText "Skip PaperCut port conversion"
 }
 
 #turn off bi-direction support and advanced printing features for all printers
@@ -75,6 +109,7 @@ foreach ($line in $queuefile){
 	# set default to greyscale and turn off duplexing
 	Set-PrintConfiguration $line.Name  $line.Name -Color $false
 	Set-PrintConfiguration $line.Name  $line.Name -DuplexingMode 0
+    Write-Log -logText "Setting configurations for printer: " $line.Name
 }
 	
 
