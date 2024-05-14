@@ -1,6 +1,9 @@
 
 # CSV file with the information for printer names and ports
 $queuefile=import-csv printers_import.csv
+# log file and message formatting
+$logFile = "print_creation.log"
+
 
     # example
     # Write-Log -logText "Message to file"
@@ -9,10 +12,7 @@ function Write-Log{
     param(
         [string]$logText
     )
-
-
-    # log file and message formatting
-    $logFile = "print_creation.log"
+    
     # Check to make sure it exists and if not create it
     if(-not(Test-Path $logFile)){
         New-Item -ItemType File -Path $logFile -Force
