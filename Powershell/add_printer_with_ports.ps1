@@ -29,8 +29,8 @@ function Write-Log{
 
 foreach ($line in $queuefile){
 	
-	if ($line.Name -ne (Get-Printer -name $line.Name -ErrorAction SilentlyContinue)) {
-		Write-Host "Printer: "  $line.Name  " doesn't exist..." -ForegroundColor Green
+	if ($line.PrinterName -ne (Get-Printer -name $line.PrinterName -ErrorAction SilentlyContinue)) {
+		Write-Host "Printer: "  $line.PrinterName  " doesn't exist..." -ForegroundColor Green
 		# Check if printerport doesn't exist
 		if ($line.PortName -ne (Get-PrinterPort -name $line.PortAddress -ErrorAction SilentlyContinue)) {
 		# Add printerPort
@@ -48,12 +48,12 @@ foreach ($line in $queuefile){
         # right here we need to check if the printer is to be shared and if so, share it and set the share name
             if($line.Shared.ToLower() -eq "yes"){
                 #add printer and share
-                Add-Printer -Name $line.Name -PortName $line.PortName -DriverName $line.DriverName -ShareName $line.ShareName -Shared -ErrorAction SilentlyContinue
-                Write-Log -logText "Adding printer and sharing: " $line.Name
+                Add-Printer -Name $line.PrinterName -PortName $line.PortName -DriverName $line.DriverName -ShareName $line.ShareName -Shared -ErrorAction SilentlyContinue
+                Write-Log -logText "Adding printer and sharing: " $line.PrinterName
             }else{
                 # Add the printer
-		        Add-Printer -N $line.Name -PortName $line.PortName -DriverName $line.DriverName -ErrorAction SilentlyContinue
-                Write-Log -logText "Adding printer: " $line.Name
+		        Add-Printer -N $line.PrinterName -PortName $line.PortName -DriverName $line.DriverName -ErrorAction SilentlyContinue
+                Write-Log -logText "Adding printer: " $line.PrinterName
             }
 	}catch{
 		Write-Host $_.Exception.Message -ForegroundColor Red
@@ -90,9 +90,9 @@ if ($decision -eq 0) {
 		$printerport = Get-PrinterPort -Name $line.PortName
 			if ($printerport.Description -eq "Standard TCP/IP Port") {
 				$newport = $line.PortName.Insert(0,"PAPERCUT_") 
-				Write-Host "Changing" $line.name "from port" $line.PortName "to" $newport
-				Set-Printer $line.Name -PortName $newport
-                Write-Log  "Changing" $line.name "from port" $line.PortName "to" $newport
+				Write-Host "Changing" $line..PrinterName "from port" $line.PortName "to" $newport
+				Set-Printer $line.PrinterName -PortName $newport
+                Write-Log  "Changing" $line..PrinterName "from port" $line.PortName "to" $newport
 			}
 	}
 	
@@ -104,12 +104,12 @@ if ($decision -eq 0) {
 
 #turn off bi-direction support and advanced printing features for all printers
 foreach ($line in $queuefile){
-	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.Name -enablebidi
-	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.Name +rawonly
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName -enablebidi
+	cscript c:\Windows\System32\Printing_Admin_Scripts\en-US\prncnfg.vbs -t -p $line.PrinterName +rawonly
 	# set default to greyscale and turn off duplexing
-	Set-PrintConfiguration $line.Name  $line.Name -Color $false
-	Set-PrintConfiguration $line.Name  $line.Name -DuplexingMode 0
-    Write-Log -logText "Setting configurations for printer: " $line.Name
+	Set-PrintConfiguration $line.PrinterName -Color $false
+	Set-PrintConfiguration $line.PrinterName -DuplexingMode 0
+    Write-Log -logText "Setting configurations for printer: " $line.PrinterName
 }
 	
 
