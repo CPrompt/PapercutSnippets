@@ -1,0 +1,4 @@
+PrinterName,DriverName,PortAddress,Shared,ShareName
+GBO C360i,KONICA MINOLTA CommonDriver PCL SP,192.1.50.97,NO,
+GBO 659,KONICA MINOLTA CommonDriver PCL SP,192.1.50.96,NO,
+GBO 454e,KONICA MINOLTA CommonDriver PCL SP,192.1.50.250,NO,
