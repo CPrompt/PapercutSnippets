@@ -1,0 +1,3 @@
+Name,DriverName,PortName,Shared,SharedName
+GBO C360i,KONICA MINOLTA CommonDriver PCL SP,192.1.50.97,YES,GBO-C360i
+GBO 659,KONICA MINOLTA CommonDriver PCL SP,192.1.50.96,NO,
