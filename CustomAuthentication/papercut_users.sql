@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 22, 2025 at 03:21 PM
+-- Generation Time: Oct 22, 2025 at 06:34 PM
 -- Server version: 10.11.11-MariaDB
 -- PHP Version: 8.4.13
 
@@ -67,9 +67,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `fullname`, `email`, `dept`, `office`, `cardno`, `otherEmails`, `secondarycardno`, `password`) VALUES
-(1, 'bruce.wayne', 'Bruce Wayne', 'bruce@wayneindustries.com', 'Accounting', 'Gotham', '5678', NULL, NULL, '$2b$12$oUvvG2s0.AM3WYDLOURJduBfhq0iDooeXsEUZnk4PSpqrpvKNyAwK'),
-(2, 'curtis.adkins', 'Curtis Adkins', 'cadkins@systeloa.com', 'Service', 'Greensboro', '1234', NULL, '6987', '$2y$12$qxYJdjRhe1bc68WUmj5CIuSF79W2gYiR.I30dtlVXQwSXsVMsai..'),
-(3, 'oliver.queen', 'Oliver Queen', 'oliver@queenindustries.com', 'Administration', 'Star City', '1234', NULL, NULL, '$2b$12$0oJdeMsOkHJ21Kxs4e0ywOc8xe./VdAXiLu8LzrKU0YB3BUsN8f1i');
+(1, 'bruce.wayne', 'Bruce Wayne', 'bruce@wayneindustries.com', 'Service', 'Gotham', '5678', NULL, '', NULL),
+(3, 'oliver.queen', 'Oliver Queen', 'oliver@queenindustries.com', 'Software Solutions', 'Star City', '1234', NULL, '', NULL);
 
 --
 -- Indexes for dumped tables
