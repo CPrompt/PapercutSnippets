@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 22, 2025 at 06:34 PM
+-- Generation Time: Oct 27, 2025 at 07:27 PM
 -- Server version: 10.11.11-MariaDB
 -- PHP Version: 8.4.13
 
@@ -28,8 +28,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `groups` (
+  `id` int(11) NOT NULL,
   `groupname` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `groups`
+--
+
+INSERT INTO `groups` (`id`, `groupname`) VALUES
+(1, 'Accounting'),
+(2, 'Sales');
 
 -- --------------------------------------------------------
 
@@ -38,10 +47,18 @@ CREATE TABLE `groups` (
 --
 
 CREATE TABLE `group_members` (
-  `groupname` varchar(50) DEFAULT NULL,
-  `username` varchar(50) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `group_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `group_members`
+--
+
+INSERT INTO `group_members` (`id`, `user_id`, `group_id`) VALUES
+(1, 1, 1),
+(2, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -78,15 +95,16 @@ INSERT INTO `users` (`id`, `username`, `fullname`, `email`, `dept`, `office`, `c
 -- Indexes for table `groups`
 --
 ALTER TABLE `groups`
-  ADD PRIMARY KEY (`groupname`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `groupname` (`groupname`);
 
 --
 -- Indexes for table `group_members`
 --
 ALTER TABLE `group_members`
-  ADD KEY `groupname` (`groupname`),
-  ADD KEY `username` (`username`),
-  ADD KEY `group_members_ibfk2` (`user_id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_group_id` (`group_id`),
+  ADD KEY `fk_user` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -98,6 +116,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `group_members`
+--
+ALTER TABLE `group_members`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -113,8 +143,8 @@ ALTER TABLE `users`
 -- Constraints for table `group_members`
 --
 ALTER TABLE `group_members`
-  ADD CONSTRAINT `group_members_ibfk2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `group_members_ibfk_1` FOREIGN KEY (`groupname`) REFERENCES `groups` (`groupname`);
+  ADD CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -16,11 +16,11 @@ import bcrypt
 # ---------------------- CONFIGURATION ----------------------
 DB_HOST = "localhost"
 DB_USER = "papercut"
-DB_PASS = "password"
+DB_PASS = "db_pass"
 DB_NAME = "papercut_users"
 
-auth = "token_pass"
-host = "http://127.0.0.1:9191/rpc/api/xmlrpc"
+auth = "token_auth"
+host = "http://papercut_server:9191/rpc/api/xmlrpc"
 
 # -----------------------------------------------------------
 
@@ -68,8 +68,9 @@ def get_group_members(groupname):
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
         SELECT u.* FROM users u
-        JOIN group_members gm ON gm.username = u.username
-        WHERE gm.groupname = %s
+        INNER JOIN group_members gm ON gm.user_id = u.id
+        INNER JOIN groups g ON g.id = gm.group_id
+        WHERE g.groupname = %s
     """, (groupname,))
     members = cursor.fetchall()
     conn.close()
