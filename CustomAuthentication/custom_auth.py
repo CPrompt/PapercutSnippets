@@ -16,10 +16,10 @@ import bcrypt
 # ---------------------- CONFIGURATION ----------------------
 DB_HOST = "localhost"
 DB_USER = "papercut"
-DB_PASS = "Systel50!"
+DB_PASS = "db_password"
 DB_NAME = "papercut_users"
 
-auth = "Systel50!"
+auth = "admin_password_for_papercut"
 host = "http://localhost:9191/rpc/api/xmlrpc"
 
 # -----------------------------------------------------------
