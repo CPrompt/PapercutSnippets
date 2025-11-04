@@ -37,3 +37,5 @@ Either way, you should be able to navigate to the directory and see the user man
 
 This does use bcrpty to hash the passwords so that it has some level of encryption.
 
+Make sure to edit the config key "user-source.update-user-details-card-id" to "Y"
+

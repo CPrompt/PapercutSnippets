@@ -16,11 +16,11 @@ import bcrypt
 # ---------------------- CONFIGURATION ----------------------
 DB_HOST = "localhost"
 DB_USER = "papercut"
-DB_PASS = "db_pass"
+DB_PASS = "Systel50!"
 DB_NAME = "papercut_users"
 
-auth = "token_auth"
-host = "http://papercut_server:9191/rpc/api/xmlrpc"
+auth = "Systel50!"
+host = "http://localhost:9191/rpc/api/xmlrpc"
 
 # -----------------------------------------------------------
 
@@ -89,6 +89,12 @@ def is_user_in_group(username, groupname):
     return result is not None
 
 # ---------------------- USER DETAIL FORMATTER ----------------------
+def safe_field(value):
+    """ return a safe value if no value is in database """
+    if value is None:
+        return ""
+    return str(value)
+
 
 def format_user_details(user):
     """Format user data for PaperCut (short or long form)."""
@@ -96,16 +102,28 @@ def format_user_details(user):
         return None
 
     if extraData:
-        return '\t'.join([
-            user["username"], user["fullname"], user["email"],
-            user["dept"], user["office"], user["cardno"],
-            user["otherEmails"], user["secondarycardno"]
-        ])
+        fields = [
+            user["username"], 
+            user["fullname"], 
+            user["email"],
+            user["dept"], 
+            user["office"], 
+            user["cardno"],
+            user["otherEmails"], 
+            user["secondarycardno"]
+        ]
     else:
-        return '\t'.join([
-            user["username"], user["fullname"], user["email"],
-            user["dept"], user["office"]
-        ])
+        fields = [
+                user["username"], 
+                user["fullname"], 
+                user["email"],
+                user["dept"], 
+                user["office"]
+        ]
+
+    """conver to string """
+    safe_fields = [safe_field(f) for f in fields]
+    return "\t".join(safe_fields)
 
 # ---------------------- PAPERCUT CONFIG CHECK ----------------------
 
