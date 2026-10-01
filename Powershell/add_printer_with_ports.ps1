@@ -1,4 +1,3 @@
-
 # CSV file with the information for printer names and ports
 $queuefile=import-csv printers_import.csv
 # log file and message formatting
